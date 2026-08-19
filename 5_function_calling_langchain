@@ -1,0 +1,26 @@
+from langchain.agents import create_agent
+from langchain.tools import tool
+from langchain_openai import ChatOpenAI
+
+
+@tool
+def get_weather(location: str) -> str:
+    """Get the current weather for a location."""
+
+    print(f"Getting weather for {location}")
+
+    return f"The weather in {location} is sunny and 72°F."
+
+
+llm = ChatOpenAI(model="gpt-5")
+
+tools = [get_weather]
+
+agent = create_agent(model=llm, tools=tools)
+
+
+result = agent.invoke(
+    {"messages": [{"role": "user", "content": "What is the weather in Paris?"}]}
+)
+
+print(result)

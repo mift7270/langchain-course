@@ -1,0 +1,103 @@
+from langchain_openai import ChatOpenAI
+from langchain.tools import tool
+from langchain_core.messages import HumanMessage, ToolMessage
+from dotenv import load_dotenv
+
+load_dotenv()
+
+# --------------------------------
+# 1. Create our tool
+# --------------------------------
+
+
+@tool  # langchain create the JSON schema to be makde avaiable to the LLMT
+def get_weather(location: str) -> str:
+    """Get the current weather for a location."""
+
+    return f"The weather in {location} is sunny and 72°F."
+
+
+# --------------------------------
+# 2. Create the LLM
+# --------------------------------
+
+llm = ChatOpenAI(model="gpt-5")  # model
+
+
+# --------------------------------
+# 3. Give the LLM access to tools
+# --------------------------------
+
+tools = [get_weather]
+
+# Now langchan make the tool definition avaialle to the LLM
+llm_with_tools = llm.bind_tools(tools)
+
+
+# --------------------------------
+# 4. Create dictionary for execution
+# --------------------------------
+
+tools_dict = {tool.name: tool for tool in tools}
+
+
+# --------------------------------
+# 5. User asks a question
+# --------------------------------
+
+messages = [HumanMessage(content="What is the weather in Paris?")]
+
+
+# --------------------------------
+# 6. Ask the LLM what to do
+# --------------------------------
+
+# this is where the LLM generate the tool call given the get_weather and location entered by the use
+response = llm_with_tools.invoke(messages)
+
+# conversation hisotry saved that may be sent back tater to hte LLM
+messages.append(response)
+
+
+# --------------------------------
+# 7. Look at requested tool calls
+# --------------------------------
+
+
+# Response.too_calls containt the tool call along with a call id which are extracted below
+for tool_call in response.tool_calls:
+
+    tool_name = tool_call["name"]
+    tool_args = tool_call["args"]
+    tool_call_id = tool_call["id"]
+
+    print(tool_name)
+    print(tool_args)
+
+    # --------------------------------
+    # 8. Find the actual Python tool
+    # --------------------------------
+
+    selected_tool = tools_dict[tool_name]
+
+    # --------------------------------
+    # 9. Execute the tool
+    # --------------------------------
+
+    result = selected_tool.invoke(tool_args)
+
+    # --------------------------------
+    # 10. Send result back to LLM
+    # --------------------------------
+
+    messages.append(ToolMessage(content=str(result), tool_call_id=tool_call_id))
+
+
+# --------------------------------
+# 11. Ask LLM for final answer
+# --------------------------------
+
+# The LLM can turn the tool result into the final natural-language answer.
+final_response = llm_with_tools.invoke(messages)
+
+print(final_response.content)
