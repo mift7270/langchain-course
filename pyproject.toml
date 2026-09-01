@@ -1,0 +1,42 @@
+[project]
+name = "langchain-course"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "Hamza Miftah El Kheir", email = "hamza.miftah@gmail.com" }
+]
+requires-python = ">=3.11"
+dependencies = [
+    "beautifulsoup4>=4.15.0",
+    "black>=26.5.1",
+    "certifi>=2026.7.22",
+    "fastapi>=0.141.1",
+    "firecrawl-py>=4.38.0",
+    "isort>=8.0.1",
+    "jinja2>=3.1.6",
+    "langchain-chroma>=1.1.0",
+    "langchain-community>=0.4.2",
+    "langchain-pinecone>=0.2.13",
+    "langchain-tavily>=0.2.18",
+    "langchain-text-splitters>=1.1.2",
+    "langchainhub>=0.1.21",
+    "langsmith>=0.11.1",
+    "nltk>=3.10.3",
+    "openai>=3.3.1",
+    "pillow>=12.3.0",
+    "python-dotenv>=1.2.3",
+    "streamlit>=1.62.0",
+    "streamlit-chat>=0.1.1",
+    "tiktoken>=0.14.0",
+    "tqdm>=4.70.0",
+    "unstructured>=0.27.1",
+    "uvicorn>=0.52.4",
+]
+
+[project.scripts]
+langchain-course = "langchain_course:main"
+
+[build-system]
+requires = ["uv_build>=0.12.3,<0.13.0"]
+build-backend = "uv_build"
