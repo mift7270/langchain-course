@@ -7,7 +7,7 @@ from react import llm, tools
 load_dotenv()
 
 SYSTEM_MESSAGE = """
-You are a helpful assistant than can use tools to answer questions
+You are a helpful assistant that can use tools to answer questions
 """
 
 
